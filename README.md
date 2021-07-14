@@ -11,7 +11,8 @@ An animated cube that is able to randomly rotate in its own axis. The user is ab
 
 ---
 
-Some pieces of code:
-```
-Code
-```
+- Download the content of this repository, extract it and open a terminal
+commands in the resulting folder.
+- Install the project dependencies using the `npm install` command
+- Once the installation is finished, you can run the project with the command
+`node server.js`.
