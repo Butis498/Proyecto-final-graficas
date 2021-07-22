@@ -1,15 +1,62 @@
-<!DOCTYPE <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js" defer></script>
-</head>
-<body>
-    <h1>WebGL!!</h1>
-    <canvas></canvas>
-</body>
+    <head>
+        <meta charset="utf-8" />
+        <title>Page Title</title>
+        <style>
+            body {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        //importar THREE
+        <script src="https://threejs.org/build/three.js"></script>
+        //Generar cubo con rotacion
+        <script>
+            //cosas de THREE que se tienen que poner, son para establecer la escena
+            var escena = new THREE.Scene()
+            var camara = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            )
+            var renderer = new THREE.WebGLRenderer()
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            document.body.appendChild(renderer.domElement)
+
+            //boxGeometry contiene todos los vertices y llena las caras del cubo
+            var geometria = new THREE.BoxGeometry(1, 1, 1)
+
+            //matriz llena de los colores de cada cara del cubo
+            var coloresCaras = [
+                new THREE.MeshBasicMaterial({ color: "#47D6B5" }),
+                new THREE.MeshBasicMaterial({ color: "#380FA8" }),
+                new THREE.MeshBasicMaterial({ color: "#FE938C" }),
+                new THREE.MeshBasicMaterial({ color: "#BFAAFA" }),
+                new THREE.MeshBasicMaterial({ color: "#F6AE2D" }),
+                new THREE.MeshBasicMaterial({ color: "#7A142C" }),
+            ]
+
+            //Mesh le agrega el material (la matriz de colores) al cubo
+            var cubo = new THREE.Mesh(geometria, coloresCaras)
+            escena.add(cubo)
+
+            //se mueve la camara para que no este adentro del vubo, el cual esta en (0, 0, 0)
+            camara.position.z = 5
+
+            //animacion simple para poder ver el cubo de cada lado
+            var animate = function () {
+                requestAnimationFrame(animate)
+
+                cubo.rotation.x += 0.01
+                cubo.rotation.y += 0.01
+
+                renderer.render(escena, camara)
+            }
+
+            animate()
+        </script>
+    </body>
 </html>
