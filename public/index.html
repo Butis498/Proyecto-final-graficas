@@ -68,20 +68,38 @@
             scene.add(light);
 
 
+
+
             // Texture Loading
             var textureLoader = new THREE.TextureLoader();
             crateTexture = textureLoader.load("http://songnes.com/g/crate2_diffuse.png");
 
+
+            const lavabasecolor = textureLoader.load("textures/lava/LAVA_005_COLOR.jpg");
+            const lavanormalMap = textureLoader.load("textures/lava/LAVA_005_NORM.jpg");
+            const lavaheightMap = textureLoader.load("textures/lava/LAVA_005_DISP.png");
+            const lavaroughnessMap = textureLoader.load("textures/lava/LAVA_005_ROUGH.jpg");
+            const lavaambientOcclusionMap = textureLoader.load("textures/lava/LAVA_005_OCC.jpg");
+            const lavaemissive = textureLoader.load("textures/lava/LAVA_005_MASK.jpg");
+
+           
+            const brickWallbasecolor = textureLoader.load("textures/brick/Brick_Wall_017_basecolor.jpg");
+            const brickWallnormalMap = textureLoader.load("textures/brick/Brick_Wall_017_normal.jpg");
+            const brickWallheightMap = textureLoader.load("textures/brick/Brick_Wall_017_height.png");
+            const brickWallroughnessMap = textureLoader.load("textures/brick/Brick_Wall_017_roughness.jpg");
+            const brickWallambientOcclusionMap = textureLoader.load("textures/brick/Brick_Wall_017_ambientOcclusion.jpg");
+            
+            const sphere0 = new THREE.Mesh(new THREE.SphereGeometry(1, 512, 512), new THREE.MeshStandardMaterial({ map: brickWallbasecolor, normalMap: brickWallnormalMap, displacementMap: brickWallheightMap, displacementScale: 0.05, roughnessMap: brickWallroughnessMap, roughness: 1, aoMap: brickWallambientOcclusionMap }))
+            sphere0.geometry.attributes.uv2 = sphere0.geometry.attributes.uv
+            sphere0.position.y = 3
+            sphere0.position.x = -4
+            sphere0.position.z = 3
+            scene.add(sphere0)
+
             // Create mesh with these textures
             crate = new THREE.Mesh(
                 new THREE.BoxGeometry(3, 3, 3),
-                new THREE.MeshPhongMaterial({
-                    color: 0xffffff,
-
-                    map: crateTexture,
-                    bumpMap: crateBumpMap,
-                    normalMap: crateNormalMap
-                })
+                new THREE.MeshPhongMaterial({ color: 0xffff66, map: lavabasecolor, normalMap: lavanormalMap, displacementMap: lavaheightMap, displacementScale: 0.1, roughnessMap: lavaroughnessMap, roughness: 1, aoMap: lavaambientOcclusionMap, emissiveMap: lavaemissive })
             );
             scene.add(crate);
             crate.position.set(2.5, 3 / 2, 2.5);
