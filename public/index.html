@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Demo 04</title>
+        <title>Proyecto Final</title>
         <script src="https://threejs.org/build/three.js"></script>
         <script type="text/javascript" src="demo.js"></script>
     </head>
@@ -10,15 +10,15 @@
         <span style="position: absolute; top: 0 px; left: 0 px">
             <input
                 type="button"
-                value="Toggle Wireframe"
+                value="Cambiar a Wireframe"
                 onclick="mesh.material.wireframe = !
                     mesh.material.wireframe;
                 lavaBlock.material.wireframe = !lavaBlock.material.wireframe;
                 meshSphere.material.wireframe = !meshSphere.material.wireframe;
                 sphere0.material.wireframe = !sphere0.material.wireframe;"
             /><br />
-            WASD to move. <br />
-            Arrow keys to turn.
+            Moverse con WASD <br />
+            Flechas para rotar
         </span>
         <br /><br />
         <script>
@@ -193,26 +193,23 @@
 
                 meshSphere.rotation.x += 0.01
                 meshSphere.rotation.y += 0.01
-                mesh.rotation.x += 0.01 // little red cube
-                mesh.rotation.y += 0.01 // little red cube
-                lavaBlock.rotation.y += 0.01 // Box Texture
+                mesh.rotation.x += 0.01
+                mesh.rotation.y += 0.01
+                lavaBlock.rotation.y += 0.01
 
                 if (keyboard[87]) {
-                    // W key
                     camera.position.x -=
                         Math.sin(camera.rotation.y) * player.speed
                     camera.position.z -=
                         -Math.cos(camera.rotation.y) * player.speed
                 }
                 if (keyboard[83]) {
-                    // S key
                     camera.position.x +=
                         Math.sin(camera.rotation.y) * player.speed
                     camera.position.z +=
                         -Math.cos(camera.rotation.y) * player.speed
                 }
                 if (keyboard[65]) {
-                    // A key
                     camera.position.x +=
                         Math.sin(camera.rotation.y + Math.PI / 2) * player.speed
                     camera.position.z +=
@@ -220,7 +217,6 @@
                         player.speed
                 }
                 if (keyboard[68]) {
-                    // D key
                     camera.position.x +=
                         Math.sin(camera.rotation.y - Math.PI / 2) * player.speed
                     camera.position.z +=
@@ -229,11 +225,9 @@
                 }
 
                 if (keyboard[37]) {
-                    // left arrow key
                     camera.rotation.y -= player.turnSpeed
                 }
                 if (keyboard[39]) {
-                    // right arrow key
                     camera.rotation.y += player.turnSpeed
                 }
 
