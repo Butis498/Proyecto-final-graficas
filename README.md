@@ -6,7 +6,7 @@
 
 
 ### Main idea:
-An animated cube that is able to randomly rotate in its own axis. The user is able to interact with the cube's rotation via mouse/finger dragging. As the cube rotates, the light reflects on different angles and produces a changing shade pattern which is reflected in the background/environment.
+An animated cube that is able to randomly rotate in its own axis. The user is able to interact with thecamara by moving the position and also transforming the figures into its skeleton. As the cube rotates, the light reflects on different angles and produces a changing shade pattern which is reflected in the background/environment.
 
 
 ---
@@ -16,3 +16,8 @@ commands in the resulting folder.
 - Install the project dependencies using the `npm install` command
 - Once the installation is finished, you can run the project with the command
 `node server.js`.
+
+
+Esteban Salazar A00823658
+Marco Farías A01380475
+Emiliano Ancer A00823377
