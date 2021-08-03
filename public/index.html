@@ -13,8 +13,9 @@
                 value="Toggle Wireframe"
                 onclick="mesh.material.wireframe = !
                     mesh.material.wireframe;
-                meshFloor.material.wireframe = !meshFloor.material.wireframe;
-                lavaBlock.material.wireframe = !lavaBlock.material.wireframe;"
+                lavaBlock.material.wireframe = !lavaBlock.material.wireframe;
+                meshSphere.material.wireframe = !meshSphere.material.wireframe;
+                sphere0.material.wireframe = !sphere0.material.wireframe;"
             /><br />
             WASD to move. <br />
             Arrow keys to turn.
@@ -22,7 +23,7 @@
         <br /><br />
         <script>
             var scene, camera, renderer, mesh
-            var meshFloor, ambientLight, light
+            var meshFloor, ambientLight, light, meshSphere, sphere0
 
             var lavaBlock,
                 lavaBlockTexture,
@@ -54,7 +55,7 @@
                 scene.add(mesh)
 
                 meshFloor = new THREE.Mesh(
-                    new THREE.PlaneGeometry(20, 20, 10, 10),
+                    new THREE.PlaneGeometry(40, 40, 10, 10),
                     new THREE.MeshPhongMaterial({
                         color: 0xffffff,
                         wireframe: USE_WIREFRAME,
@@ -120,18 +121,18 @@
                 var rings = 20
 
                 var geometry = new THREE.SphereGeometry(radius, segments, rings)
-                var material = new THREE.MeshBasicMaterial({
+                var material = new THREE.MeshPhongMaterial({
                     color: 0xf3a2b0,
-                    wireframe: true,
+                    wireframe: USE_WIREFRAME,
                 })
 
-                var meshSphere = new THREE.Mesh(geometry, material)
+                meshSphere = new THREE.Mesh(geometry, material)
                 meshSphere.position.set(-4, 3, 3)
                 meshSphere.receiveShadow = true
                 meshSphere.castShadow = true
                 scene.add(meshSphere)
 
-                const sphere0 = new THREE.Mesh(
+                sphere0 = new THREE.Mesh(
                     new THREE.SphereGeometry(1, 512, 512),
                     new THREE.MeshStandardMaterial({
                         map: brickWallbasecolor,
@@ -141,6 +142,7 @@
                         roughnessMap: brickWallroughnessMap,
                         roughness: 1,
                         aoMap: brickWallambientOcclusionMap,
+                        wireframe: USE_WIREFRAME,
                     })
                 )
                 sphere0.geometry.attributes.uv2 = sphere0.geometry.attributes.uv
@@ -187,6 +189,8 @@
             function animate() {
                 requestAnimationFrame(animate)
 
+                meshSphere.rotation.x += 0.01
+                meshSphere.rotation.y += 0.01
                 mesh.rotation.x += 0.01 // little red cube
                 mesh.rotation.y += 0.01 // little red cube
                 lavaBlock.rotation.y += 0.01 // Box Texture
