@@ -1,175 +1,252 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <title>Demo 04</title>
+        <script src="https://threejs.org/build/three.js"></script>
+        <script type="text/javascript" src="demo.js"></script>
+    </head>
 
-<head>
-    <title>Demo 04</title>
-    <script src="https://threejs.org/build/three.js">
-    </script>
-    <script type="text/javascript" src="demo.js"> </script>
-</head>
-
-<body style="text-align: center;">
-    <span style="position: absolute;
-                top: 0 px;
-                left: 0 px;">
-        <input type='button' value="Toggle Wireframe" onclick="mesh.material.wireframe = !
+    <body style="text-align: center">
+        <span style="position: absolute; top: 0 px; left: 0 px">
+            <input
+                type="button"
+                value="Toggle Wireframe"
+                onclick="mesh.material.wireframe = !
                     mesh.material.wireframe;
-                meshFloor.material.wireframe = !meshFloor.material.wireframe;" /><br /> WASD to move. <br /> Arrow keys
-        to turn. </span>
-    <script>
-        var scene, camera, renderer, mesh;
-        var meshFloor, ambientLight, light;
+                meshFloor.material.wireframe = !meshFloor.material.wireframe;
+                lavaBlock.material.wireframe = !lavaBlock.material.wireframe;"
+            /><br />
+            WASD to move. <br />
+            Arrow keys to turn.
+        </span>
+        <br /><br />
+        <script>
+            var scene, camera, renderer, mesh
+            var meshFloor, ambientLight, light
 
-        var crate, crateTexture, crateNormalMap, crateBumpMap;
+            var lavaBlock,
+                lavaBlockTexture,
+                lavaBlockNormalMap,
+                lavaBlockBumpMap
 
-        var keyboard = {};
-        var player = {
-            height: 1.8,
-            speed: 0.2,
-            turnSpeed: Math.PI * 0.02
-        };
-        var USE_WIREFRAME = false;
+            var keyboard = {}
+            var player = {
+                height: 1.8,
+                speed: 0.2,
+                turnSpeed: Math.PI * 0.02,
+            }
+            var USE_WIREFRAME = false
 
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 1000);
+            function init() {
+                scene = new THREE.Scene()
+                camera = new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 1000)
 
-            mesh = new THREE.Mesh(
-                new THREE.BoxGeometry(1, 1, 1),
-                new THREE.MeshPhongMaterial({
-                    color: 0xff4444,
-                    wireframe: USE_WIREFRAME
+                mesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(1, 1, 1),
+                    new THREE.MeshPhongMaterial({
+                        color: 0xff4444,
+                        wireframe: USE_WIREFRAME,
+                    })
+                )
+                mesh.position.y += 1
+                mesh.receiveShadow = true
+                mesh.castShadow = true
+                scene.add(mesh)
+
+                meshFloor = new THREE.Mesh(
+                    new THREE.PlaneGeometry(20, 20, 10, 10),
+                    new THREE.MeshPhongMaterial({
+                        color: 0xffffff,
+                        wireframe: USE_WIREFRAME,
+                    })
+                )
+                meshFloor.rotation.x -= Math.PI / 2
+                meshFloor.receiveShadow = true
+                scene.add(meshFloor)
+
+                ambientLight = new THREE.AmbientLight(0xffffff, 0.2)
+                scene.add(ambientLight)
+
+                light = new THREE.PointLight(0xffffff, 0.8, 18)
+                light.position.set(-3, 6, -3)
+                light.castShadow = true
+                light.shadow.camera.near = 0.1
+                light.shadow.camera.far = 25
+                scene.add(light)
+
+                // Texture Loading
+                var textureLoader = new THREE.TextureLoader()
+                lavaBlockTexture = textureLoader.load(
+                    "http://songnes.com/g/lavaBlock2_diffuse.png"
+                )
+
+                const lavabasecolor = textureLoader.load(
+                    "textures/lava/LAVA_005_COLOR.jpg"
+                )
+                const lavanormalMap = textureLoader.load(
+                    "textures/lava/LAVA_005_NORM.jpg"
+                )
+                const lavaheightMap = textureLoader.load(
+                    "textures/lava/LAVA_005_DISP.png"
+                )
+                const lavaroughnessMap = textureLoader.load(
+                    "textures/lava/LAVA_005_ROUGH.jpg"
+                )
+                const lavaambientOcclusionMap = textureLoader.load(
+                    "textures/lava/LAVA_005_OCC.jpg"
+                )
+                const lavaemissive = textureLoader.load(
+                    "textures/lava/LAVA_005_MASK.jpg"
+                )
+
+                const brickWallbasecolor = textureLoader.load(
+                    "textures/brick/Brick_Wall_017_basecolor.jpg"
+                )
+                const brickWallnormalMap = textureLoader.load(
+                    "textures/brick/Brick_Wall_017_normal.jpg"
+                )
+                const brickWallheightMap = textureLoader.load(
+                    "textures/brick/Brick_Wall_017_height.png"
+                )
+                const brickWallroughnessMap = textureLoader.load(
+                    "textures/brick/Brick_Wall_017_roughness.jpg"
+                )
+                const brickWallambientOcclusionMap = textureLoader.load(
+                    "textures/brick/Brick_Wall_017_ambientOcclusion.jpg"
+                )
+
+                var radius = 2
+                var segments = 11
+                var rings = 20
+
+                var geometry = new THREE.SphereGeometry(radius, segments, rings)
+                var material = new THREE.MeshBasicMaterial({
+                    color: 0xf3a2b0,
+                    wireframe: true,
                 })
-            );
-            mesh.position.y += 1;
-            mesh.receiveShadow = true;
-            mesh.castShadow = true;
-            scene.add(mesh);
 
-            meshFloor = new THREE.Mesh(
-                new THREE.PlaneGeometry(20, 20, 10, 10),
-                new THREE.MeshPhongMaterial({
-                    color: 0xffffff,
-                    wireframe: USE_WIREFRAME
-                })
-            );
-            meshFloor.rotation.x -= Math.PI / 2;
-            meshFloor.receiveShadow = true;
-            scene.add(meshFloor);
+                var meshSphere = new THREE.Mesh(geometry, material)
+                meshSphere.position.set(-4, 3, 3)
+                meshSphere.receiveShadow = true
+                meshSphere.castShadow = true
+                scene.add(meshSphere)
 
-            ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-            scene.add(ambientLight);
+                const sphere0 = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, 512, 512),
+                    new THREE.MeshStandardMaterial({
+                        map: brickWallbasecolor,
+                        normalMap: brickWallnormalMap,
+                        displacementMap: brickWallheightMap,
+                        displacementScale: 0.05,
+                        roughnessMap: brickWallroughnessMap,
+                        roughness: 1,
+                        aoMap: brickWallambientOcclusionMap,
+                    })
+                )
+                sphere0.geometry.attributes.uv2 = sphere0.geometry.attributes.uv
+                sphere0.position.y = 3
+                sphere0.position.x = -4
+                sphere0.position.z = 3
+                scene.add(sphere0)
 
-            light = new THREE.PointLight(0xffffff, 0.8, 18);
-            light.position.set(-3, 6, -3);
-            light.castShadow = true;
-            light.shadow.camera.near = 0.1;
-            light.shadow.camera.far = 25;
-            scene.add(light);
+                // Create mesh with these textures
+                lavaBlock = new THREE.Mesh(
+                    new THREE.BoxGeometry(3, 3, 3),
+                    new THREE.MeshPhongMaterial({
+                        color: 0xffff66,
+                        map: lavabasecolor,
+                        normalMap: lavanormalMap,
+                        displacementMap: lavaheightMap,
+                        displacementScale: 0,
+                        roughnessMap: lavaroughnessMap,
+                        roughness: 1,
+                        aoMap: lavaambientOcclusionMap,
+                        emissiveMap: lavaemissive,
+                        wireframe: USE_WIREFRAME,
+                    })
+                )
+                scene.add(lavaBlock)
+                lavaBlock.position.set(2.5, 3 / 2, 2.5)
+                lavaBlock.receiveShadow = true
+                lavaBlock.castShadow = true
 
+                camera.position.set(0, player.height, -5)
+                camera.lookAt(new THREE.Vector3(0, player.height, 0))
 
+                renderer = new THREE.WebGLRenderer()
+                renderer.setSize(1280, 720)
 
+                renderer.shadowMap.enabled = true
+                renderer.shadowMap.type = THREE.BasicShadowMap
 
-            // Texture Loading
-            var textureLoader = new THREE.TextureLoader();
-            crateTexture = textureLoader.load("http://songnes.com/g/crate2_diffuse.png");
+                document.body.appendChild(renderer.domElement)
 
-
-            const lavabasecolor = textureLoader.load("textures/lava/LAVA_005_COLOR.jpg");
-            const lavanormalMap = textureLoader.load("textures/lava/LAVA_005_NORM.jpg");
-            const lavaheightMap = textureLoader.load("textures/lava/LAVA_005_DISP.png");
-            const lavaroughnessMap = textureLoader.load("textures/lava/LAVA_005_ROUGH.jpg");
-            const lavaambientOcclusionMap = textureLoader.load("textures/lava/LAVA_005_OCC.jpg");
-            const lavaemissive = textureLoader.load("textures/lava/LAVA_005_MASK.jpg");
-
-           
-            const brickWallbasecolor = textureLoader.load("textures/brick/Brick_Wall_017_basecolor.jpg");
-            const brickWallnormalMap = textureLoader.load("textures/brick/Brick_Wall_017_normal.jpg");
-            const brickWallheightMap = textureLoader.load("textures/brick/Brick_Wall_017_height.png");
-            const brickWallroughnessMap = textureLoader.load("textures/brick/Brick_Wall_017_roughness.jpg");
-            const brickWallambientOcclusionMap = textureLoader.load("textures/brick/Brick_Wall_017_ambientOcclusion.jpg");
-            
-            const sphere0 = new THREE.Mesh(new THREE.SphereGeometry(1, 512, 512), new THREE.MeshStandardMaterial({ map: brickWallbasecolor, normalMap: brickWallnormalMap, displacementMap: brickWallheightMap, displacementScale: 0.05, roughnessMap: brickWallroughnessMap, roughness: 1, aoMap: brickWallambientOcclusionMap }))
-            sphere0.geometry.attributes.uv2 = sphere0.geometry.attributes.uv
-            sphere0.position.y = 3
-            sphere0.position.x = -4
-            sphere0.position.z = 3
-            scene.add(sphere0)
-
-            // Create mesh with these textures
-            crate = new THREE.Mesh(
-                new THREE.BoxGeometry(3, 3, 3),
-                new THREE.MeshPhongMaterial({ color: 0xffff66, map: lavabasecolor, normalMap: lavanormalMap, displacementMap: lavaheightMap, displacementScale: 0.1, roughnessMap: lavaroughnessMap, roughness: 1, aoMap: lavaambientOcclusionMap, emissiveMap: lavaemissive })
-            );
-            scene.add(crate);
-            crate.position.set(2.5, 3 / 2, 2.5);
-            crate.receiveShadow = true;
-            crate.castShadow = true;
-
-
-            camera.position.set(0, player.height, -5);
-            camera.lookAt(new THREE.Vector3(0, player.height, 0));
-
-            renderer = new THREE.WebGLRenderer();
-            renderer.setSize(1280, 720);
-
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.BasicShadowMap;
-
-            document.body.appendChild(renderer.domElement);
-
-            animate();
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            mesh.rotation.x += 0.01; // little red cube
-            mesh.rotation.y += 0.01; // little red cube
-            crate.rotation.y += 0.01; // Box Texture
-
-            if (keyboard[87]) { // W key
-                camera.position.x -= Math.sin(camera.rotation.y) * player.speed;
-                camera.position.z -= -Math.cos(camera.rotation.y) * player.speed;
-            }
-            if (keyboard[83]) { // S key
-                camera.position.x += Math.sin(camera.rotation.y) * player.speed;
-                camera.position.z += -Math.cos(camera.rotation.y) * player.speed;
-            }
-            if (keyboard[65]) { // A key
-                camera.position.x += Math.sin(camera.rotation.y + Math.PI / 2) * player.speed;
-                camera.position.z += -Math.cos(camera.rotation.y + Math.PI / 2) * player.speed;
-            }
-            if (keyboard[68]) { // D key
-                camera.position.x += Math.sin(camera.rotation.y - Math.PI / 2) * player.speed;
-                camera.position.z += -Math.cos(camera.rotation.y - Math.PI / 2) * player.speed;
+                animate()
             }
 
-            if (keyboard[37]) { // left arrow key
-                camera.rotation.y -= player.turnSpeed;
+            function animate() {
+                requestAnimationFrame(animate)
+
+                mesh.rotation.x += 0.01 // little red cube
+                mesh.rotation.y += 0.01 // little red cube
+                lavaBlock.rotation.y += 0.01 // Box Texture
+
+                if (keyboard[87]) {
+                    // W key
+                    camera.position.x -=
+                        Math.sin(camera.rotation.y) * player.speed
+                    camera.position.z -=
+                        -Math.cos(camera.rotation.y) * player.speed
+                }
+                if (keyboard[83]) {
+                    // S key
+                    camera.position.x +=
+                        Math.sin(camera.rotation.y) * player.speed
+                    camera.position.z +=
+                        -Math.cos(camera.rotation.y) * player.speed
+                }
+                if (keyboard[65]) {
+                    // A key
+                    camera.position.x +=
+                        Math.sin(camera.rotation.y + Math.PI / 2) * player.speed
+                    camera.position.z +=
+                        -Math.cos(camera.rotation.y + Math.PI / 2) *
+                        player.speed
+                }
+                if (keyboard[68]) {
+                    // D key
+                    camera.position.x +=
+                        Math.sin(camera.rotation.y - Math.PI / 2) * player.speed
+                    camera.position.z +=
+                        -Math.cos(camera.rotation.y - Math.PI / 2) *
+                        player.speed
+                }
+
+                if (keyboard[37]) {
+                    // left arrow key
+                    camera.rotation.y -= player.turnSpeed
+                }
+                if (keyboard[39]) {
+                    // right arrow key
+                    camera.rotation.y += player.turnSpeed
+                }
+
+                renderer.render(scene, camera)
             }
-            if (keyboard[39]) { // right arrow key
-                camera.rotation.y += player.turnSpeed;
+
+            function keyDown(event) {
+                keyboard[event.keyCode] = true
             }
 
-            renderer.render(scene, camera);
-        }
+            function keyUp(event) {
+                keyboard[event.keyCode] = false
+            }
 
-        function keyDown(event) {
-            keyboard[event.keyCode] = true;
-        }
+            window.addEventListener("keydown", keyDown)
+            window.addEventListener("keyup", keyUp)
 
-        function keyUp(event) {
-            keyboard[event.keyCode] = false;
-        }
-
-        window.addEventListener('keydown', keyDown);
-        window.addEventListener('keyup', keyUp);
-
-        window.onload = init;
-    </script>
-    <img src="http://songnes.com/g/crate2_diffuse.png" alt="Ghost" class="img_Half">
-    <br>
-</body>
-
+            window.onload = init
+        </script>
+        <br />
+    </body>
 </html>
