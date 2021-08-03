@@ -134,7 +134,7 @@
 
                 sphere0 = new THREE.Mesh(
                     new THREE.SphereGeometry(1, 512, 512),
-                    new THREE.MeshStandardMaterial({
+                    new THREE.MeshPhongMaterial({
                         map: brickWallbasecolor,
                         normalMap: brickWallnormalMap,
                         displacementMap: brickWallheightMap,
@@ -149,6 +149,8 @@
                 sphere0.position.y = 3
                 sphere0.position.x = -4
                 sphere0.position.z = 3
+                sphere0.receiveShadow = true
+                sphere0.castShadow = true
                 scene.add(sphere0)
 
                 // Create mesh with these textures
